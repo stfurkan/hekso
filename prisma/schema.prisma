@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+model Hekso {
+  id          String    @id @default(cuid())
+  content     String    @db.VarChar(1000)
+  createdAt   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  main        Hekso?    @relation("replies", fields: [mainId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  mainId      String?
+  replies     Hekso[]   @relation("replies")
+  likes       Like[]
+}
+
+model Like {
+  id          Int     @id @default(autoincrement())
+  hekso       Hekso   @relation(fields: [heksoId], references: [id])
+  heksoId     String
+  user        User    @relation(fields: [userId], references: [id])
+  userId      String
+
+  @@unique([userId, heksoId], name: "userId_heksoId_constraint")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  bio           String?
+  username      String?   @unique
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  accounts      Account[]
+  sessions      Session[]
+  heksos        Hekso[]
+  likes         Like[]
+  followers     User[]    @relation("follows", references: [id])
+  following     User[]    @relation("follows", references: [id])
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String? @db.Text
+  access_token       String? @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String? @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
