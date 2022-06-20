@@ -58,7 +58,9 @@ export default function NewHekso() {
   if (!session && !loading) {
     return (
       <div className='max-w-4xl p-6 mx-auto bg-white rounded-md shadow-md dark:bg-gray-800'>
-        <p className='text-xl'>You need to login to post a new hekso!</p>
+        <p className='text-xl text-gray-700 dark:text-white'>
+          You need to login to post a new hekso!
+        </p>
       </div>
     );
   }
@@ -66,7 +68,7 @@ export default function NewHekso() {
   if (loading) {
     return (
       <div className='max-w-4xl p-6 mx-auto bg-white rounded-md shadow-md dark:bg-gray-800'>
-        <p className='text-xl'>Loading...</p>
+        <p className='text-xl text-gray-700 dark:text-white'>Loading...</p>
       </div>
     );
   }
