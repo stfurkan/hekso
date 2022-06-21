@@ -71,7 +71,7 @@ export default function Feed({ heksos }) {
   if (loading) {
     return (
       <div className='max-w-4xl p-6 mx-auto bg-white rounded-md shadow-md dark:bg-gray-800'>
-        <p className='text-xl'>Loading...</p>
+        <p className='text-xl text-gray-700 dark:text-white'>Loading...</p>
       </div>
     );
   }
