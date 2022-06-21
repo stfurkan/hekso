@@ -9,6 +9,7 @@ export default function Home({ heksos }) {
   const { data: session, status } = useSession();
   const loading = status === 'loading';
 
+  const [heksoLoading, setHeksoLoading] = useState(false);
   const [pageHeksos, setPageHeksos] = useState(heksos);
   const [cursor, setCursor] = useState(
     heksos.length > 0 ? heksos[heksos.length - 1].id : ''
@@ -23,6 +24,8 @@ export default function Home({ heksos }) {
     }
 
     try {
+      setHeksoLoading(true);
+
       const body = {
         cursor: cursor
       };
@@ -42,6 +45,8 @@ export default function Home({ heksos }) {
       if (loadedHeksos.length < 10) {
         setShouldLoadMore(false);
       }
+
+      setHeksoLoading(false);
     } catch (error) {
       console.error(error);
     }
@@ -170,12 +175,18 @@ export default function Home({ heksos }) {
 
       {shouldLoadMore ? (
         <div className='text-center py-4'>
-          <span
-            className='text-white text-2xl bg-gray-800 p-3 font-semibold rounded-xl hover:cursor-pointer'
-            onClick={() => loadMore()}
-          >
-            Load More
-          </span>
+          {heksoLoading ? (
+            <span className='text-white text-2xl bg-gray-800 p-3 font-semibold rounded-xl hover:cursor-pointer'>
+              Loading...
+            </span>
+          ) : (
+            <span
+              className='text-white text-2xl bg-gray-800 p-3 font-semibold rounded-xl hover:cursor-pointer'
+              onClick={() => loadMore()}
+            >
+              Load More
+            </span>
+          )}
         </div>
       ) : (
         <div className='text-center py-4'>

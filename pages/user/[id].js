@@ -7,6 +7,7 @@ import Follow from '../../components/Follow';
 export default function User({ user }) {
   const { id, name, image, heksos, followers, following, _count } = user;
 
+  const [heksoLoading, setHeksoLoading] = useState(false);
   const [pageHeksos, setPageHeksos] = useState(heksos);
   const [cursor, setCursor] = useState(
     heksos.length > 0 ? heksos[heksos.length - 1].id : ''
@@ -17,6 +18,8 @@ export default function User({ user }) {
 
   const loadMore = async () => {
     try {
+      setHeksoLoading(true);
+
       const body = {
         userId: id,
         cursor: cursor
@@ -35,6 +38,8 @@ export default function User({ user }) {
       if (loadedHeksos.length < 10) {
         setShouldLoadMore(false);
       }
+
+      setHeksoLoading(false);
     } catch (error) {
       console.error(error);
     }
@@ -96,12 +101,18 @@ export default function User({ user }) {
             </div>
             {shouldLoadMore ? (
               <div className='text-center py-4'>
-                <span
-                  className='text-white text-2xl bg-gray-800 p-3 font-semibold rounded-xl hover:cursor-pointer'
-                  onClick={() => loadMore()}
-                >
-                  Load More
-                </span>
+                {heksoLoading ? (
+                  <span className='text-white text-2xl bg-gray-800 p-3 font-semibold rounded-xl hover:cursor-pointer'>
+                    Loading...
+                  </span>
+                ) : (
+                  <span
+                    className='text-white text-2xl bg-gray-800 p-3 font-semibold rounded-xl hover:cursor-pointer'
+                    onClick={() => loadMore()}
+                  >
+                    Load More
+                  </span>
+                )}
               </div>
             ) : (
               <div className='text-center py-4'>
