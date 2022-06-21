@@ -1,14 +1,18 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 import { getProviders, signIn, useSession } from 'next-auth/react';
 
 export default function SignIn({ providers }) {
+  const router = useRouter();
   const { data: session, status } = useSession();
   const loading = status === 'loading';
 
+  const { error } = router.query;
+  console.log(router.query);
+
   if (session) {
-    Router.push('/');
+    router.push('/');
 
     return null;
   }
@@ -16,6 +20,32 @@ export default function SignIn({ providers }) {
   if (loading) {
     return null;
   }
+
+  const errors = {
+    Signin: 'Try signing with a different account.',
+    OAuthSignin: 'Try signing with a different account.',
+    OAuthCallback: 'Try signing with a different account.',
+    OAuthCreateAccount: 'Try signing with a different account.',
+    EmailCreateAccount: 'Try signing with a different account.',
+    Callback: 'Try signing with a different account.',
+    OAuthAccountNotLinked:
+      'To confirm your identity, sign in with the same account you used originally.',
+    EmailSignin: 'Check your email address.',
+    CredentialsSignin:
+      'Sign in failed. Check the details you provided are correct.',
+    default: 'Unable to sign in.'
+  };
+
+  const SignInError = ({ error }) => {
+    const errorMessage = error && (errors[error] ?? errors.default);
+    return (
+      <div className='text-center'>
+        <span className='bg-red-600 p-2 text-white rounded-xl shadow-lg'>
+          {errorMessage}
+        </span>
+      </div>
+    );
+  };
 
   return (
     <>
@@ -39,6 +69,7 @@ export default function SignIn({ providers }) {
             <div className='rounded-xl bg-white shadow-xl'>
               <div className='p-6 sm:p-16'>
                 <div className='space-y-4'>
+                  {error && <SignInError error={error} />}
                   <span className='font-extrabold italic text-blue-600 text-4xl'>
                     0x
                   </span>
