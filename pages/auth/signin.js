@@ -39,10 +39,8 @@ export default function SignIn({ providers }) {
   const SignInError = ({ error }) => {
     const errorMessage = error && (errors[error] ?? errors.default);
     return (
-      <div className='text-center'>
-        <span className='bg-red-600 p-2 text-white rounded-xl shadow-lg'>
-          {errorMessage}
-        </span>
+      <div className='text-center bg-red-600 rounded-xl shadow-lg p-2'>
+        <span className='text-white'>{errorMessage}</span>
       </div>
     );
   };
