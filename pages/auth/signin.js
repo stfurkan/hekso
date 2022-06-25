@@ -9,7 +9,6 @@ export default function SignIn({ providers }) {
   const loading = status === 'loading';
 
   const { error } = router.query;
-  console.log(router.query);
 
   if (session) {
     router.push('/');
